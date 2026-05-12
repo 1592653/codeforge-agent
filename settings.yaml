@@ -1,0 +1,66 @@
+pipeline:
+  max_concurrent_agents: 3
+  timeout_per_agent: 300
+  retry_on_failure: true
+  max_retries: 2
+
+agents:
+  scanner:
+    include_patterns:
+      - "*.py"
+      - "*.js"
+      - "*.ts"
+      - "*.jsx"
+      - "*.tsx"
+      - "*.java"
+      - "*.go"
+    exclude_patterns:
+      - "**/test/**"
+      - "**/tests/**"
+      - "**/vendor/**"
+      - "**/node_modules/**"
+      - "**/__pycache__/**"
+      - "**/.git/**"
+    max_file_size_kb: 500
+
+  analyzer:
+    complexity_threshold: 15
+    max_function_lines: 50
+    detect_patterns:
+      - god_class
+      - long_method
+      - feature_envy
+      - duplicate_code
+      - nested_callbacks
+      - magic_numbers
+
+  planner:
+    strategy: incremental
+    max_changes_per_run: 20
+    require_approval: false
+    refactoring_patterns:
+      - extract_method
+      - extract_class
+      - introduce_parameter_object
+      - replace_conditional_with_polymorphism
+      - move_method
+      - inline_method
+
+  refactorer:
+    auto_format: true
+    create_branch: true
+    branch_prefix: "codeforge/"
+    commit_prefix: "refactor:"
+
+  validator:
+    test_command: "pytest tests/ -x"
+    min_coverage: 80
+    auto_rollback: true
+    regression_check: true
+
+token:
+  track_usage: true
+  daily_budget: 5000000
+  alert_threshold: 0.8
+  cost_per_1k_input: 0.003
+  cost_per_1k_output: 0.015
